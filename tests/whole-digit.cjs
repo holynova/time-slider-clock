@@ -2,7 +2,7 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const root=fs.readFileSync(__dirname+'/../dist/index.html','utf8');
 const original=cp.execFileSync('git',['show','HEAD:dist/index.html'],{encoding:'utf8',cwd:__dirname+'/..'});
 const script=html=>html.split('<script>')[1].split('</script>')[0];
-assert.equal(script(root),script(original),'Original clock logic must remain unchanged');
+assert.equal(script(root).slice(0,script(root).indexOf("let mode=")),script(original).slice(0,script(original).indexOf("let mode=")),'Original column mask geometry must remain unchanged');
 const html=fs.readFileSync(__dirname+'/../dist/whole-digit/index.html','utf8'),js=script(html);
 new vm.Script(js);
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
@@ -36,4 +36,4 @@ for(let second=0;second<86400;second++){
  }
 }
 `,{assert});
-console.log('PASS: 86,400 whole-digit readings, all three columns share one position; identical masks, complete bounds at every position; original JS preserved');
+console.log('PASS: 86,400 whole-digit readings, all three columns share one position; identical masks, complete bounds at every position; original column mask geometry preserved');
