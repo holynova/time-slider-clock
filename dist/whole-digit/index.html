@@ -15,56 +15,59 @@
 <section class="stage" aria-label="滑轨时钟"><svg class="clock" id="clock" viewBox="0 -70 700 750" role="img" aria-labelledby="clockTitle"><title id="clockTitle">实时滑轨时钟</title><defs>
 <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1eff0"/><stop offset=".5" stop-color="#c6c6c7"/><stop offset="1" stop-color="#aaa9ab"/></linearGradient>
 <linearGradient id="orange" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f07830"/><stop offset=".55" stop-color="#dc5c1d"/><stop offset="1" stop-color="#c34c13"/></linearGradient>
-<linearGradient id="housing"><stop stop-color="#38393a"/><stop offset=".6" stop-color="#292b2c"/><stop offset="1" stop-color="#3c3d3e"/></linearGradient>
+<linearGradient id="housingFill"><stop stop-color="#38393a"/><stop offset=".6" stop-color="#292b2c"/><stop offset="1" stop-color="#3c3d3e"/></linearGradient>
 <filter id="shadow" x="-70%" y="-15%" width="260%" height="140%"><feDropShadow dx="9" dy="7" stdDeviation="2.1" flood-color="#403b40" flood-opacity=".29"/></filter>
 <filter id="frameShadow" x="-15%" y="-20%" width="140%" height="150%"><feDropShadow dx="7" dy="7" stdDeviation="2" flood-opacity=".20"/></filter>
-<clipPath id="railArea"><rect x="125" y="65" width="688" height="530"/></clipPath><clipPath id="window"><rect x="125" y="252" width="450" height="100"/></clipPath>
-</defs><g id="housing" filter="url(#frameShadow)"><rect x="112" y="235" width="475" height="131" rx="1" fill="url(#housing)"/><path d="M113 236h472" stroke="#666769" stroke-opacity=".5"/><path d="M587 236v130" stroke="#151718" stroke-width="3"/></g><g id="guides"></g><g id="tapes" clip-path="url(#railArea)"></g><g id="orangeTapes" clip-path="url(#window)"></g><g id="colon" fill="url(#orange)"><rect x="337" y="272" width="20" height="17"/><rect x="337" y="311" width="20" height="17"/></g><g id="screws"></g></svg>
+<clipPath id="railArea"><rect x="125" y="65" width="688" height="530"/></clipPath><clipPath id="window"><rect x="125" y="252" width="450" height="115"/></clipPath>
+</defs><g id="housing" filter="url(#frameShadow)"><rect x="112" y="235" width="475" height="146" rx="1" fill="url(#housingFill)"/><path d="M113 236h472" stroke="#666769" stroke-opacity=".5"/><path d="M587 236v145" stroke="#151718" stroke-width="3"/></g><g id="backplates" clip-path="url(#window)"></g><g id="tapes" clip-path="url(#railArea)"></g><g id="colon" fill="url(#orange)"><rect x="337" y="275" width="21" height="21"/><rect x="337" y="321" width="21" height="21"/></g><g id="screws"></g></svg>
 <time id="accessibleTime" class="sr-only"></time></section>
 <footer><div><div class="date" id="date"></div><div class="caption" id="note">每一分钟，换一种排列。</div></div><div class="control-area"><div class="controls"><span class="status"><i></i><span id="status">正在走时</span></span><label class="seconds-toggle"><input id="seconds" type="checkbox" role="switch">显示秒数</label><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button><button id="fullscreen" class="full" aria-label="全屏显示"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div></footer>
 </main><script>
 'use strict';
 const NS='http://www.w3.org/2000/svg';
-const digits=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];
+const digits=['111101101101111','001001001001001','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];
 const digitRows=n=>digits[n].match(/.{3}/g).map(row=>parseInt(row,2)).join('');
 // Each fixed tape holds complete three-cell rows; all three columns share one transform.
 function shortestTape(patterns){const p=[...new Set(patterns)],n=p.length,dp=Array.from({length:1<<n},()=>Array(n).fill(null));for(let i=0;i<n;i++)dp[1<<i][i]=p[i];for(let mask=1;mask<(1<<n);mask++)for(let i=0;i<n;i++){const a=dp[mask][i];if(!a)continue;for(let j=0;j<n;j++){if(mask>>j&1)continue;let k=5;while(k&&!a.endsWith(p[j].slice(0,k)))k--;const next=a+p[j].slice(k),m=mask|1<<j;if(dp[m][j]===null||next.length<dp[m][j].length)dp[m][j]=next;}}return dp[(1<<n)-1].reduce((a,b)=>a===null||b.length<a.length?b:a,null);}
 function el(name,attrs,parent){const e=document.createElementNS(NS,name);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);parent.append(e);return e;}
-const tapes=[],cell=20,starts=[135,237,373,475,611,713];
+const tapes=[],cell=23,starts=[135,237,373,475,611,713];
 for(let d=0;d<6;d++){
  const range=d===0?[0,1,2]:(d===2||d===4)?[0,1,2,3,4,5]:[0,1,2,3,4,5,6,7,8,9];
  const rows='0'+shortestTape(range.map(digitRows))+'0',x=starts[d];
- const guide=el('g',{'data-digit':d},document.getElementById('guides'));
- el('rect',{x:x-3,y:65,width:73,height:530,rx:2,fill:'#858185','fill-opacity':.16},guide);
- for(const edge of[x-3,x+70])el('path',{d:`M${edge} 65v530`,stroke:'#777278','stroke-opacity':.22},guide);
- const g=el('g',{class:'rail','data-digit':d,'data-rows':rows},document.getElementById('tapes'));
- el('rect',{x:x-2,y:-2,width:71,height:rows.length*cell+4,rx:1,fill:'#242627',filter:'url(#shadow)'},g);
- const orange=el('g',{class:'rail','data-digit':d},document.getElementById('orangeTapes'));
- for(let row=0;row<rows.length;row++)for(let c=0;c<3;c++){
-  const lit=(Number(rows[row])>>(2-c))&1,px=x+c*23;
-  el('rect',{x:px,y:row*cell+1,width:21,height:18,fill:lit?'url(#metal)':'#252728',stroke:'#1b1d1e','stroke-width':.6},g);
-  if(lit)el('path',{d:`M${px+1} ${row*cell+2}h19`,stroke:'#ffffff','stroke-opacity':.5},g);
-  el('rect',{x:px,y:row*cell+1,width:21,height:18,fill:lit?'url(#orange)':'#252728',stroke:'#252728','stroke-width':.7},orange);
+ const plate=el('g',{'data-digit':d},document.getElementById('backplates'));
+ // Fixed orange 8-shaped backing. Openings in the moving mask reveal it.
+ for(let r=0;r<5;r++)for(let c=0;c<3;c++)if(digits[8][r*3+c]==='1'){
+  el('rect',{x:x+c*23,y:252+r*cell+1,width:21,height:21,fill:'url(#orange)',stroke:'#a63e13','stroke-width':.3},plate);
  }
- tapes.push({d,rows,g,orange,guide});
+ const g=el('g',{class:'rail','data-digit':d,'data-rows':rows},document.getElementById('tapes'));
+ // A single perforated black sheet: openings are transparent, not white tiles.
+ let outline=`M${x-2} -2h71v${rows.length*cell+4}h-71z`;
+ const edges=[];
+ for(let row=0;row<rows.length;row++)for(let c=0;c<3;c++){
+  const lit=(Number(rows[row])>>(2-c))&1,px=x+c*23,y=row*cell+1;
+  if(lit){outline+=`M${px} ${y}h21v21h-21z`;edges.push(`M${px} ${y+21}h21v-21`);}
+ }
+ el('path',{d:outline,fill:'#252627','fill-rule':'evenodd',stroke:'#121415','stroke-width':.35,filter:'url(#shadow)','data-grid':'perforated'},g);
+ el('path',{d:edges.join(''),fill:'none',stroke:'#77787a','stroke-width':.5,'stroke-opacity':.55},g);
+ tapes.push({d,rows,g,plate});
 }
-for(const x of starts){for(const sx of[x+5,x+60]){el('circle',{cx:sx,cy:359,r:2.2,fill:'#181a1b'},document.getElementById('screws'));el('path',{d:`M${sx-1} 358.5h2`,stroke:'#929294','stroke-width':.8},document.getElementById('screws'));}}
+for(const x of starts){for(const sx of[x+5,x+60]){el('circle',{cx:sx,cy:375,r:2.2,fill:'#181a1b'},document.getElementById('screws'));el('path',{d:`M${sx-1} 374.5h2`,stroke:'#929294','stroke-width':.8},document.getElementById('screws'));}}
 let mode='live',last='',showSeconds=false,paused=false;
 let speed=60,anchorMs=Date.now(),anchorTick=performance.now();
 const $=id=>document.getElementById(id);
 const secondScrews=[];
 for(const node of Array.from($('screws').children).slice(16))secondScrews.push(node);
 const secondColon=el('g',{fill:'url(#orange)'},$('colon'));
-for(const y of[272,311])el('rect',{x:575,y,width:20,height:17},secondColon);
+for(const y of[275,321])el('rect',{x:575,y,width:21,height:21},secondColon);
 function formatTime(date,seconds=showSeconds){return [date.getHours(),date.getMinutes(),...(seconds?[date.getSeconds()]:[])].map(n=>String(n).padStart(2,'0')).join(':');}
 function simulationMs(now=performance.now()){return anchorMs+(paused?0:Math.max(0,now-anchorTick)*speed);}
 function reanchor(){anchorMs=simulationMs();anchorTick=performance.now();}
 function currentDate(){return new Date(mode==='test'?simulationMs():Date.now());}
 function updateMotion(){const duration=mode==='test'&&!paused?Math.min(.75,(showSeconds?1:60)/speed*.65):.75;$('clock').style.setProperty('--slide-duration',`${duration}s`);}
-function render(value,instant=false){if(value===last)return;last=value;const numbers=value.replaceAll(':','').split('').map(Number);for(const t of tapes){if(t.d>=numbers.length)continue;const offset=t.rows.indexOf(digitRows(numbers[t.d]));if(offset<0)throw new Error('Tape pattern missing');if(instant){t.g.style.transition='none';t.orange.style.transition='none';}const transform=`translateY(${252-offset*cell}px)`;t.g.style.transform=transform;t.orange.style.transform=transform;if(instant)requestAnimationFrame(()=>requestAnimationFrame(()=>{t.g.style.transition='';t.orange.style.transition='';}));}$('clockTitle').textContent=`${value}，${mode==='live'?'当前时间':'测试时间'}`;$('accessibleTime').textContent=value;$('clock').dataset.time=value;}
+function render(value,instant=false){if(value===last)return;last=value;const numbers=value.replaceAll(':','').split('').map(Number);for(const t of tapes){if(t.d>=numbers.length)continue;const offset=t.rows.indexOf(digitRows(numbers[t.d]));if(offset<0)throw new Error('Tape pattern missing');if(instant){t.g.style.transition='none';}const transform=`translateY(${252-offset*cell}px)`;t.g.style.transform=transform;if(instant)requestAnimationFrame(()=>requestAnimationFrame(()=>{t.g.style.transition='';}));}$('clockTitle').textContent=`${value}，${mode==='live'?'当前时间':'测试时间'}`;$('accessibleTime').textContent=value;$('clock').dataset.time=value;}
 function tick(instant=false){const date=currentDate();$('date').textContent=new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(date);render(formatTime(date),instant);$('accessibleTime').dateTime=date.toISOString();}
 function updateStatus(){$('status').textContent=mode==='live'?'正在走时':paused?'测试已暂停':`${speed} 倍快进`;$('note').textContent=mode==='live'?(showSeconds?'每一秒，换一种排列。':'每一分钟，换一种排列。'):`${paused?'已暂停':'时间以 '+speed+' 倍速度流逝'}，点击「实时」返回。`;updateMotion();}
-function updateSeconds(){showSeconds=$('seconds').checked;for(const t of tapes){t.g.style.display=t.orange.style.display=t.guide.style.display=t.d>=4&&!showSeconds?'none':'';}for(const n of secondScrews)n.style.display=showSeconds?'':'none';secondColon.style.display=showSeconds?'':'none';$('clock').setAttribute('viewBox',showSeconds?'0 -70 938 750':'0 -70 700 750');$('clock').classList.toggle('seconds-visible',showSeconds);$('window').firstElementChild.setAttribute('width',showSeconds?688:450);const housing=$('housing');housing.children[0].setAttribute('width',showSeconds?713:475);housing.children[1].setAttribute('d',`M113 236h${showSeconds?710:472}`);housing.children[2].setAttribute('d',`M${showSeconds?825:587} 236v130`);last='';updateStatus();tick(true);}
+function updateSeconds(){showSeconds=$('seconds').checked;for(const t of tapes){t.g.style.display=t.plate.style.display=t.d>=4&&!showSeconds?'none':'';}for(const n of secondScrews)n.style.display=showSeconds?'':'none';secondColon.style.display=showSeconds?'':'none';$('clock').setAttribute('viewBox',showSeconds?'0 -70 938 750':'0 -70 700 750');$('clock').classList.toggle('seconds-visible',showSeconds);$('window').firstElementChild.setAttribute('width',showSeconds?688:450);const housing=$('housing');housing.children[0].setAttribute('width',showSeconds?713:475);housing.children[1].setAttribute('d',`M113 236h${showSeconds?710:472}`);housing.children[2].setAttribute('d',`M${showSeconds?825:587} 236v145`);last='';updateStatus();tick(true);}
 function startTest(){const value=$('startTime').value;if(!/^\d{2}:\d{2}(:\d{2})?$/.test(value)){$('startTime').reportValidity();return;}const parts=value.split(':').map(Number);const date=new Date();date.setHours(parts[0],parts[1],parts[2]||0,0);anchorMs=date.getTime();anchorTick=performance.now();paused=false;$('pause').textContent='暂停';$('pause').setAttribute('aria-pressed','false');updateStatus();tick(true);}
 function setMode(next){mode=next;document.body.classList.toggle('testing',next==='test');$('testPanel').hidden=next!=='test';for(const id of['live','test']){const active=id===next;$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}last='';if(next==='test')startTest();else{paused=false;updateStatus();tick(true);}}
 $('seconds').onchange=updateSeconds;$('live').onclick=()=>setMode('live');$('test').onclick=()=>{if(mode!=='test'){$('startTime').value=formatTime(new Date(),true);setMode('test');}};

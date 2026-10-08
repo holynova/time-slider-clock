@@ -5,11 +5,17 @@ const script=html=>html.split('<script>')[1].split('</script>')[0];
 assert.equal(script(root),script(original),'Original clock logic must remain unchanged');
 const html=fs.readFileSync(__dirname+'/../dist/whole-digit/index.html','utf8'),js=script(html);
 new vm.Script(js);
+const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+assert.equal(new Set(ids).size,ids.length,'DOM IDs must be unique');
+assert(js.includes('width:21,height:21'),'Grid cells must be square');
+assert(js.includes("'fill-rule':'evenodd'"),'Grid openings must be transparent');
+assert(!js.includes("t.plate.style.transform"),'Orange backing must remain stationary');
 assert(!js.includes('data-column'),'No individually moving columns');
 assert(js.includes('t.rows.indexOf(digitRows(numbers[t.d]))'));
 const pure=js.slice(0,js.indexOf('function el('));
 vm.runInNewContext(pure+`
 const ranges=[[0,1,2],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5],[0,1,2,3,4,5,6,7,8,9]];
+for(const digit of digits)for(let i=0;i<15;i++)if(digit[i]==='1')assert.equal(digits[8][i],'1','All digits must fit the fixed 8-shaped backing');
 const tapes=ranges.map(range=>'0'+shortestTape(range.map(digitRows))+'0');
 for(let second=0;second<86400;second++){
  const h=Math.floor(second/3600),m=Math.floor(second/60)%60,s=second%60;
