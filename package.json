@@ -1,0 +1,13 @@
+{
+  "name": "time-slider-clock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pixel mechanical clock with sliding grids, seconds, minimal mode and accelerated testing",
+  "scripts": {
+    "dev": "python3 -m http.server 4178 --directory dist",
+    "check": "node scripts/check.mjs",
+    "deploy:check": "wrangler deploy --dry-run --config wrangler.jsonc",
+    "deploy": "wrangler deploy --config wrangler.jsonc"
+  },
+  "devDependencies": { "wrangler": "4.128.0", "qrcode": "1.5.4" }
+}
