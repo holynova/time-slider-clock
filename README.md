@@ -1,8 +1,8 @@
 # Time Slider / 滑轨时钟
 
-中文：用上下滑动的镂空网格显示时间。提供分列与整位两版，默认显示秒数；设置收进菜单，支持仅时钟模式、全屏和 10–3600 倍快进测试。整位版使用六条相同的 0–9 滑轨，并完整展示上下边界。
+中文：用上下滑动的镂空网格显示时间。提供分列与整位两版，默认显示秒数，进入或刷新时从零滑动到当前时间；设置收进菜单，支持仅时钟模式、全屏和 10–3600 倍快进测试。整位版使用六条相同的 0–9 滑轨，并完整展示上下边界。
 
-English: A pixel mechanical clock with moving perforated grids. Includes column and whole-digit variants, seconds by default, a settings menu, clock-only mode, fullscreen, and accelerated testing at 10–3600× speed. Whole-digit masks share one fixed 0–9 pattern and remain fully visible.
+English: A pixel mechanical clock with moving perforated grids. Includes column and whole-digit variants, seconds by default, a zero-to-current-time opening animation, a settings menu, clock-only mode, fullscreen, and accelerated testing at 10–3600× speed. Whole-digit masks share one fixed 0–9 pattern and remain fully visible.
 
 ![手机实际页面 / Mobile screenshot](./assets/screenshot.png)
 
@@ -31,7 +31,7 @@ npm run deploy:check
 npm run deploy
 ```
 
-Cloudflare Workers · `xiaosang.cc/time-slider-clock` · v1.0.1
+Cloudflare Workers · `xiaosang.cc/time-slider-clock` · v1.0.2
 
 源码和部署配置均在 `main`；从同一提交在本地手动发布，无 Cloudflare 自动发布工作流。
 Source and deployment configuration share `main`; deploy manually from the same commit.

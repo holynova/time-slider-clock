@@ -19,7 +19,7 @@
 </defs><g id="housing" filter="url(#frameShadow)"><rect x="112" y="235" width="475" height="146" rx="1" fill="url(#housingFill)"/><path d="M113 236h472" stroke="#666769" stroke-opacity=".5"/><path d="M587 236v145" stroke="#151718" stroke-width="3"/></g><g id="backplates" clip-path="url(#window)"></g><g id="tapes"></g><g id="colon" fill="url(#orange)"><rect x="337" y="275" width="21" height="21"/><rect x="337" y="321" width="21" height="21"/></g><g id="screws"></g></svg>
 <time id="accessibleTime" class="sr-only"></time></section>
 
-</main><dialog id="settings" class="settings" aria-labelledby="settingsTitle"><div class="menu-head"><h2 id="settingsTitle">时钟设置</h2><button id="closeMenu" class="close-menu" aria-label="关闭设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><label class="menu-row">显示秒数<input id="seconds" type="checkbox" role="switch" checked></label><label class="menu-row">仅时钟<input id="pureMode" type="checkbox" role="switch" aria-describedby="pureHint"></label><p class="hint" id="pureHint">仅时钟模式下，轻点时钟或按 Esc 可打开设置。</p><div class="menu-section"><div class="controls"><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div><div class="menu-section"><button id="fullscreen" class="full">全屏显示</button><nav class="versions" aria-label="滑轨版本"><a href="/">分列滑轨</a><a href="/whole-digit/" aria-current="page">整位滑轨</a></nav></div><div class="menu-section"><p style="margin:0 0 10px;font-size:13px"><a href="https://github.com/holynova/time-slider-clock" target="_blank" rel="noopener noreferrer" style="color:inherit">GitHub 源码</a><span style="float:right;color:#706c71">v1.0.1</span></p><div id="date" class="date"></div><div id="note" class="caption"></div><div id="status" class="status"></div></div></dialog><script>
+</main><dialog id="settings" class="settings" aria-labelledby="settingsTitle"><div class="menu-head"><h2 id="settingsTitle">时钟设置</h2><button id="closeMenu" class="close-menu" aria-label="关闭设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><label class="menu-row">显示秒数<input id="seconds" type="checkbox" role="switch" checked></label><label class="menu-row">仅时钟<input id="pureMode" type="checkbox" role="switch" aria-describedby="pureHint"></label><p class="hint" id="pureHint">仅时钟模式下，轻点时钟或按 Esc 可打开设置。</p><div class="menu-section"><div class="controls"><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div><div class="menu-section"><button id="fullscreen" class="full">全屏显示</button><nav class="versions" aria-label="滑轨版本"><a href="/">分列滑轨</a><a href="/whole-digit/" aria-current="page">整位滑轨</a></nav></div><div class="menu-section"><p style="margin:0 0 10px;font-size:13px"><a href="https://github.com/holynova/time-slider-clock" target="_blank" rel="noopener noreferrer" style="color:inherit">GitHub 源码</a><span style="float:right;color:#706c71">v1.0.2</span></p><div id="date" class="date"></div><div id="note" class="caption"></div><div id="status" class="status"></div></div></dialog><script>
 'use strict';
 const NS='http://www.w3.org/2000/svg';
 const digits=['111101101101111','001001001001001','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];
@@ -65,13 +65,40 @@ function formatTime(date,seconds=showSeconds){return [date.getHours(),date.getMi
 function simulationMs(now=performance.now()){return anchorMs+(paused?0:Math.max(0,now-anchorTick)*speed);}
 function reanchor(){anchorMs=simulationMs();anchorTick=performance.now();}
 function currentDate(){return new Date(mode==='test'?simulationMs():Date.now());}
+
+let introActive=false,introTimers=[];
+function cancelIntro(){
+ if(!introActive)return;
+ introActive=false;introTimers.forEach(clearTimeout);introTimers=[];
+ $('clock').dataset.phase='live';updateMotion();
+}
+function startIntro(){
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){$('clock').dataset.phase='live';tick(true);return;}
+ introActive=true;
+ $('clock').dataset.phase='zero';
+ render(showSeconds?'00:00:00':'00:00',true);
+ // Let the zero position paint before enabling the opening slide.
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  if(!introActive)return;
+  introTimers.push(setTimeout(()=>{
+   if(!introActive)return;
+   $('clock').dataset.phase='sliding';
+   $('clock').style.setProperty('--slide-duration','1.2s');
+   tick(false,true);
+   introTimers.push(setTimeout(()=>{
+    introActive=false;introTimers=[];
+    $('clock').dataset.phase='live';updateMotion();tick();
+   },1260));
+  },300));
+ }));
+}
 function updateMotion(){const duration=mode==='test'&&!paused?Math.min(.75,(showSeconds?1:60)/speed*.65):.75;$('clock').style.setProperty('--slide-duration',`${duration}s`);}
 function render(value,instant=false){if(value===last)return;last=value;const numbers=value.replaceAll(':','').split('').map(Number);for(const t of tapes){if(t.d>=numbers.length)continue;const offset=t.rows.indexOf(digitRows(numbers[t.d]));if(offset<0)throw new Error('Tape pattern missing');if(instant){t.g.style.transition='none';}const transform=`translateY(${252-offset*cell}px)`;t.g.style.transform=transform;if(instant)requestAnimationFrame(()=>requestAnimationFrame(()=>{t.g.style.transition='';}));}$('clockTitle').textContent=`${value}，${mode==='live'?'当前时间':'测试时间'}`;$('accessibleTime').textContent=value;$('clock').dataset.time=value;}
-function tick(instant=false){const date=currentDate();$('date').textContent=new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(date);render(formatTime(date),instant);$('accessibleTime').dateTime=date.toISOString();}
+function tick(instant=false,allowIntro=false){if(introActive&&!allowIntro)return;const date=currentDate();$('date').textContent=new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(date);render(formatTime(date),instant);$('accessibleTime').dateTime=date.toISOString();}
 function updateStatus(){$('status').textContent=mode==='live'?'正在走时':paused?'测试已暂停':`${speed} 倍快进`;$('note').textContent=mode==='live'?(showSeconds?'每一秒，换一种排列。':'每一分钟，换一种排列。'):`${paused?'已暂停':'时间以 '+speed+' 倍速度流逝'}，点击「实时」返回。`;updateMotion();}
-function updateSeconds(){showSeconds=$('seconds').checked;for(const t of tapes){t.g.style.display=t.plate.style.display=t.d>=4&&!showSeconds?'none':'';}for(const n of secondScrews)n.style.display=showSeconds?'':'none';secondColon.style.display=showSeconds?'':'none';$('clock').setAttribute('viewBox',`90 ${viewTop} ${showSeconds?765:527} ${viewHeight}`);$('clock').classList.toggle('seconds-visible',showSeconds);$('window').firstElementChild.setAttribute('width',showSeconds?688:450);const housing=$('housing');housing.children[0].setAttribute('width',showSeconds?713:475);housing.children[1].setAttribute('d',`M113 236h${showSeconds?710:472}`);housing.children[2].setAttribute('d',`M${showSeconds?825:587} 236v145`);last='';updateStatus();tick(true);}
-function startTest(){const value=$('startTime').value;if(!/^\d{2}:\d{2}(:\d{2})?$/.test(value)){$('startTime').reportValidity();return;}const parts=value.split(':').map(Number);const date=new Date();date.setHours(parts[0],parts[1],parts[2]||0,0);anchorMs=date.getTime();anchorTick=performance.now();paused=false;$('pause').textContent='暂停';$('pause').setAttribute('aria-pressed','false');updateStatus();tick(true);}
-function setMode(next){mode=next;document.body.classList.toggle('testing',next==='test');$('testPanel').hidden=next!=='test';for(const id of['live','test']){const active=id===next;$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}last='';if(next==='test')startTest();else{paused=false;updateStatus();tick(true);}}
+function updateSeconds(){cancelIntro();showSeconds=$('seconds').checked;for(const t of tapes){t.g.style.display=t.plate.style.display=t.d>=4&&!showSeconds?'none':'';}for(const n of secondScrews)n.style.display=showSeconds?'':'none';secondColon.style.display=showSeconds?'':'none';$('clock').setAttribute('viewBox',`90 ${viewTop} ${showSeconds?765:527} ${viewHeight}`);$('clock').classList.toggle('seconds-visible',showSeconds);$('window').firstElementChild.setAttribute('width',showSeconds?688:450);const housing=$('housing');housing.children[0].setAttribute('width',showSeconds?713:475);housing.children[1].setAttribute('d',`M113 236h${showSeconds?710:472}`);housing.children[2].setAttribute('d',`M${showSeconds?825:587} 236v145`);last='';updateStatus();tick(true);}
+function startTest(){cancelIntro();const value=$('startTime').value;if(!/^\d{2}:\d{2}(:\d{2})?$/.test(value)){$('startTime').reportValidity();return;}const parts=value.split(':').map(Number);const date=new Date();date.setHours(parts[0],parts[1],parts[2]||0,0);anchorMs=date.getTime();anchorTick=performance.now();paused=false;$('pause').textContent='暂停';$('pause').setAttribute('aria-pressed','false');updateStatus();tick(true);}
+function setMode(next){cancelIntro();mode=next;document.body.classList.toggle('testing',next==='test');$('testPanel').hidden=next!=='test';for(const id of['live','test']){const active=id===next;$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}last='';if(next==='test')startTest();else{paused=false;updateStatus();tick(true);}}
 $('seconds').onchange=updateSeconds;$('live').onclick=()=>setMode('live');$('test').onclick=()=>{if(mode!=='test'){$('startTime').value=formatTime(new Date(),true);setMode('test');}};
 $('speed').onchange=()=>{reanchor();speed=Number($('speed').value);updateStatus();tick();};
 $('startTime').onchange=()=>{if(mode==='test')startTest();};$('restart').onclick=startTest;
@@ -90,5 +117,5 @@ $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await docume
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!settings.open&&document.body.classList.contains('pure-mode')){e.preventDefault();openSettings();}});
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'退出全屏':'全屏显示';});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});
-$('startTime').value=formatTime(new Date(),true);$('startTime').required=true;updateSeconds();setInterval(()=>tick(),100);
+$('startTime').value=formatTime(new Date(),true);$('startTime').required=true;updateSeconds();startIntro();setInterval(()=>tick(),100);
 </script></body></html>
