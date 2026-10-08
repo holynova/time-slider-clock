@@ -13,3 +13,5 @@ The author describes synchronized movable frames and eight stepper motors for fo
 The whole-digit web page adopts the square openings, thin continuous lattice, black blocked areas and stationary orange backing. It retains the user's previous requirement of one moving rail per digit, rather than introducing the hardware's two independently moving masks. Its fixed row sequence is therefore a different mechanism, and is not an exact reproduction of the hardware mask layout.
 
 The original column-slider page remains unchanged.
+
+The whole-digit page now uses one shared 0–9 mask for every digit. Restricted clock positions simply select a subset of its offsets. The artwork viewport includes the complete mask at every possible offset, with margins for its shadow; no moving-mask clipping remains.
