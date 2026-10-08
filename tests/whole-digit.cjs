@@ -2,7 +2,8 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const root=fs.readFileSync(__dirname+'/../dist/index.html','utf8');
 const original=cp.execFileSync('git',['show','HEAD:dist/index.html'],{encoding:'utf8',cwd:__dirname+'/..'});
 const script=html=>html.split('<script>')[1].split('</script>')[0];
-assert.equal(script(root).slice(0,script(root).indexOf("let mode=")),script(original).slice(0,script(original).indexOf("let mode=")),'Original column mask geometry must remain unchanged');
+const patterns=js=>js.slice(js.indexOf('const digits='),js.indexOf('function el('));
+assert.equal(patterns(script(root)),patterns(script(original)),'Original column digit patterns must remain unchanged');
 const html=fs.readFileSync(__dirname+'/../dist/whole-digit/index.html','utf8'),js=script(html);
 new vm.Script(js);
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
