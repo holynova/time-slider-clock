@@ -8,7 +8,7 @@ English: A pixel mechanical clock with moving perforated grids. Includes column 
 
 ## 在线体验 / Live Demo
 
-- [Cloudflare Demo — 待验证 / pending verification](https://xiaosang.cc/time-slider-clock/)
+- [Cloudflare Demo](https://xiaosang.cc/time-slider-clock/)
 - [整位滑轨 / Whole-digit clock](https://xiaosang.cc/time-slider-clock/whole-digit/)
 - [GitHub Repo](https://github.com/holynova/time-slider-clock)
 
