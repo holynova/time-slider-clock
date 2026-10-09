@@ -46,8 +46,10 @@ Direct author attachments:
 
 The guide carries CC BY-NC-SA 4.0. The derived dual-rail geometry retains attribution and that license (`dist/hardware/ATTRIBUTION.txt`).
 
-## Alphabet design
+## Alphabet design — revised 2026-10-09
 
-A fixed 8-shaped backing cannot draw arbitrary letters: its two permanently blocked center cells erase necessary strokes. The new matrix mode uses a complete 5×7 illuminated backing and 35 independent two-position blades per character. Each blade has one opaque cell and one transparent cell; the glyph changes their positions, never their geometry. The ribs conceal each short blade's return travel. The entire supporting lattice stays visible, including two unlit rows above and below. It is an original web mechanism, not a claim that the author's two rails can display this alphabet.
+A fixed 8-shaped backing cannot draw arbitrary letters. The revised letter mode uses a full 5×5 backing and five independently moving long perforated column rails per character, matching the column clock's mechanism. It replaces the earlier per-cell shutters, which did not present the requested long sliding lattice.
 
-Supported: 26 uppercase letters, 10 digits, space and 16 symbols (`: . , ! ? - + = / % < > * # ( )`). Lowercase ASCII is converted to uppercase. Six positions allow short text; the complete character demo cycles every 2.5 seconds and supports pause/resume. Characters use consistent 5×7 geometry, with distinct 0/O and 1/I forms. The original two pages are retained.
+All 30 rails share an identical immutable 38-row mask. A binary de Bruijn sequence of order 5 contains every five-cell pattern in 32 cyclic rows; four repeated rows linearize the cycle, and two solid guard rows complete the sheet. Each character column selects a five-row window from this mask. Changing text only updates the rail transforms, never the holes. The artwork bounds include every rail at every supported offset, with shadow margins.
+
+Supported: 26 uppercase letters, 10 digits, space and 16 symbols (`: . , ! ? - + = / % < > * # ( )`), all distinct 5×5 glyphs. ASCII lowercase converts to uppercase. The page opens in letter mode with HELLO!. An input directly below the full rails accepts up to six characters; click Display or press Enter to slide from the current positions over 1.1 seconds. New submissions during a transition smoothly interrupt it. Reduced motion skips movement. Invalid input preserves the current display. The character demo and optional live/test clock remain in the settings menu; clock-only mode hides the input.

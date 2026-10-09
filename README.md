@@ -1,8 +1,8 @@
 # Time Slider / 滑轨时钟
 
-中文：用上下滑动的镂空网格显示时间。提供分列、整位、原作双轨与字母栅格四种模式，默认显示秒数，进入或刷新时从零滑动到当前时间；提供经典灰墙、荧光绿、荧光黄和纯黑荧光主题，支持跟随系统并记住选择。设置收进菜单，支持仅时钟模式、全屏和 10–3600 倍快进测试。整位版共用 0–9 遮罩；原作版复用作者 STL 遮罩和位置表，左一列、右两列独立滑动，完整显示滑轨；字母版支持 A–Z、数字及 16 种符号，可输入六个字符或演示全部字符。
+中文：用上下滑动的镂空网格显示时间。提供分列、整位、原作双轨与字母栅格四种模式，默认显示秒数，进入或刷新时从零滑动到当前时间；提供经典灰墙、荧光绿、荧光黄和纯黑荧光主题，支持跟随系统并记住选择。设置收进菜单，支持仅时钟模式、全屏和 10–3600 倍快进测试。整位版共用 0–9 遮罩；原作版复用作者 STL 遮罩和位置表，左一列、右两列独立滑动，完整显示滑轨；字母版使用相同的连续镂空滑轨，支持 A–Z、数字及 16 种符号；下方输入框可输入六个字符，平滑过渡至新内容。
 
-English: A pixel mechanical clock with moving perforated grids. Includes column, whole-digit, original dual-rail and 5×7 alphabet modes, seconds by default, a zero-to-current-time opening animation, classic, fluorescent green, fluorescent yellow and OLED green themes with saved preferences and system appearance, a settings menu, clock-only mode, fullscreen, and accelerated testing at 10–3600× speed. Whole-digit masks share a fixed pattern. Dual rails reproduce the author’s mask rows and offsets with full visible bounds. The alphabet mode uses independent shutters for A–Z, digits and 16 symbols, with six-character input and a full character demo.
+English: A pixel mechanical clock with moving perforated grids. Includes column, whole-digit, original dual-rail and 5×5 alphabet modes, seconds by default, a zero-to-current-time opening animation, classic, fluorescent green, fluorescent yellow and OLED green themes with saved preferences and system appearance, a settings menu, clock-only mode, fullscreen, and accelerated testing at 10–3600× speed. Whole-digit masks share a fixed pattern. Dual rails reproduce the author’s mask rows and offsets with full visible bounds. The alphabet mode uses identical continuous perforated column rails for A–Z, digits and 16 symbols. An input below the rails transitions the current display to up to six new characters.
 
 ![手机实际页面 / Mobile screenshot](./assets/screenshot.png)
 
@@ -33,7 +33,7 @@ npm run deploy:check
 npm run deploy
 ```
 
-Cloudflare Workers · `xiaosang.cc/time-slider-clock` · v1.0.5
+Cloudflare Workers · `xiaosang.cc/time-slider-clock` · v1.0.6
 
 源码和部署配置均在 `main`；从同一提交在本地手动发布，无 Cloudflare 自动发布工作流。
 Source and deployment configuration share `main`; deploy manually from the same commit.

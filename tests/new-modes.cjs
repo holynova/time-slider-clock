@@ -20,16 +20,22 @@ for(const positions of [model.positionLeft,model.positionRight])for(const positi
 assert(!hs.includes('t.plate.style.transform'));assert(hs.includes("'data-fixed-grid':d"));assert(hs.includes('252-cell,252+5*cell'));assert(hs.includes("['right',2"));
 const matrix=fs.readFileSync('dist/matrix/index.html','utf8'),ms=script(matrix);
 const font=vm.runInNewContext(ms.slice(ms.indexOf('const glyphs='),ms.indexOf('function el('))+';({glyphs,demoCharacters,normalizeText})');
-for(const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.,!?-+=/%<>*#() '){assert(Object.hasOwn(font.glyphs,c));assert.match(font.glyphs[c],/^[01]{35}$/);}
+for(const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.,!?-+=/%<>*#() '){assert(Object.hasOwn(font.glyphs,c));assert.match(font.glyphs[c],/^[01]{25}$/);}
 assert.equal(new Set(Object.values(font.glyphs)).size,Object.keys(font.glyphs).length,'All supported glyphs must be distinct');
 assert.equal(font.normalizeText('hello!'),'HELLO!');assert.equal(font.normalizeText('a +'),'A +   ');
 for(const text of ['', 'ABCDEFG','中文','HI🙂','ß'])assert.equal(font.normalizeText(text),null,`Reject unsupported input ${text}`);
 assert.equal(font.normalizeText('0:-+!?'),'0:-+!?');
-assert(ms.includes('cell.y-(open?14:0)'));assert(ms.includes('r<7'));assert(ms.includes('c<5'));assert(!ms.includes('t.plate.style.transform'));
+assert(!ms.includes('data-cell'));assert(ms.includes('column.rail.style.transform'));assert(ms.includes('const tapeRows=universalTape()'));assert(ms.includes("'data-rows':tapeRows"));assert(!ms.includes('t.plate.style.transform'));
 // No missing demo glyphs, including the final partial page; spaces pad it safely.
 for(let offset=0;offset<font.demoCharacters.length;offset+=6)for(const c of font.demoCharacters.slice(offset,offset+6).padEnd(6,' '))assert(Object.hasOwn(font.glyphs,c));
 for(const html of [hardware,matrix,fs.readFileSync('dist/index.html','utf8'),fs.readFileSync('dist/whole-digit/index.html','utf8')]){
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
  assert.equal([...html.match(/<nav class="versions"[\s\S]*?<\/nav>/)[0].matchAll(/aria-current="page"/g)].length,1);for(const href of ['/','/whole-digit/','/hardware/','/matrix/'])assert(html.includes(`href="${href}"`));assert(html.includes('id="seconds" type="checkbox" role="switch" checked'));
 }
-console.log('PASS: author STL mask rows and Arduino offsets, 86,400 dual-rail readings, full rail bounds; 53 distinct 5×7 glyphs, input handling, complete demo, four preserved routes');
+const universal=vm.runInNewContext(ms.slice(ms.indexOf('const glyphs='),ms.indexOf('function el('))+ms.slice(ms.indexOf('function universalTape('),ms.indexOf('const tapes=[]'))+';({tapeRows,offsets,columnPattern})');
+assert.equal(universal.tapeRows.length,38,'All 32 binary five-row patterns fit one short fixed mask');
+for(const [ch,glyph] of Object.entries(font.glyphs))for(let c=0;c<5;c++){const offset=universal.offsets[ch][c];assert(offset>=0);assert.equal(universal.tapeRows.slice(offset,offset+5),Array.from({length:5},(_,r)=>glyph[r*5+c]).join(''));}
+const all=Object.values(universal.offsets).flat(),min=Math.min(...all),max=Math.max(...all),cell=14,viewTop=252-max*cell-26,viewBottom=viewTop+(max-min+38)*cell+52;
+for(const offset of all){const y=252-offset*cell;assert(y-1>viewTop);assert(y+38*cell+1<viewBottom);}
+assert(matrix.indexOf('id="letterForm"')<matrix.indexOf('</section>'),'Input belongs below the clock in the stage');assert(ms.includes("$('letterForm').addEventListener('submit'"));
+console.log('PASS: author STL mask rows and Arduino offsets, 86,400 dual-rail readings, full rail bounds; 53 distinct 5×5 glyphs on identical fixed 38-row tapes, full rail bounds, input handling, complete demo, four preserved routes');
