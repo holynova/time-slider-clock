@@ -38,9 +38,9 @@ body{color:var(--text);background:var(--bg)}.page{background:radial-gradient(ell
 <filter id="frameShadow" x="-15%" y="-20%" width="140%" height="150%"><feDropShadow dx="7" dy="7" stdDeviation="2" flood-opacity=".20"/></filter>
 <clipPath id="window"><rect x="125" y="252" width="450" height="115"/></clipPath>
 </defs><g id="housing" filter="url(#frameShadow)"><rect x="112" y="235" width="475" height="103" rx="1" fill="url(#housingFill)"/><path d="M113 236h472" stroke="#666769" stroke-opacity=".5"/><path d="M587 236v102" stroke="#151718" stroke-width="3"/></g><g id="backplates" clip-path="url(#window)"></g><g id="tapes"></g><g id="emission" class="digit-emission"><g id="emissionPixels"></g></g><g id="colon" fill="url(#orange)"><rect x="337" y="266" width="12" height="12"/><rect x="337" y="302" width="12" height="12"/></g><g id="screws"></g></svg>
-<time id="accessibleTime" class="sr-only"></time><form id="letterForm" class="letter-form" novalidate><label class="sr-only" for="message">显示文字</label><div class="message-row"><input id="message" type="text" maxlength="6" value="HELLO!" placeholder="输入字母、数字或符号" autocomplete="off" spellcheck="false" aria-describedby="glyphHint glyphError"><button id="applyText" type="submit">显示</button></div><p id="glyphHint" class="hint">最多 6 个字符 · 小写自动转大写</p><p id="glyphError" class="hint" role="status"></p></form></section>
+<time id="accessibleTime" class="sr-only"></time><form id="letterForm" class="letter-form" novalidate><label class="sr-only" for="message">显示文字</label><div class="message-row"><input id="message" type="text" maxlength="6" value="HELLO!" placeholder="输入字母、数字或符号" autocomplete="off" spellcheck="false" aria-describedby="glyphHint glyphError"><button id="applyText" type="submit">显示</button></div><p id="glyphHint" class="hint">最多 6 个字符 · 小写自动转大写</p><p id="glyphError" class="hint" role="status"></p><p id="carouselStatus" class="hint" hidden></p></form></section>
 
-</main><dialog id="settings" class="settings" aria-labelledby="settingsTitle"><div class="menu-head"><h2 id="settingsTitle">时钟设置</h2><button id="closeMenu" class="close-menu" aria-label="关闭设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><label class="menu-row">主题<select id="theme" class="theme-select" aria-label="主题"><option value="system">跟随系统</option><option value="classic">经典灰墙</option><option value="graphite">夜光 · 荧光绿</option><option value="amber">夜光 · 荧光黄</option><option value="oled">纯黑 · 荧光绿</option></select></label><label class="menu-row">显示秒数<input id="seconds" type="checkbox" role="switch" checked></label><label class="menu-row">仅时钟<input id="pureMode" type="checkbox" role="switch" aria-describedby="pureHint"></label><p class="hint" id="pureHint">仅时钟模式下，轻点时钟或按 Esc 可打开设置。</p><div class="menu-section"><div class="controls"><button id="clockDisplay" aria-pressed="false">时间</button><button id="textDisplay" class="active" aria-pressed="true" aria-controls="glyphPanel">文字与符号</button></div><div id="glyphPanel" class="glyph-panel"><div class="controls"><button id="glyphDemo" aria-pressed="false">全部字符演示</button><button id="glyphPause" aria-pressed="false" hidden>暂停演示</button></div></div></div><div class="menu-section"><div class="controls"><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div><div class="menu-section"><button id="fullscreen" class="full">全屏显示</button><nav class="versions" aria-label="滑轨版本"><a href="/">分列滑轨</a><a href="/whole-digit/">整位滑轨</a><a href="/hardware/">原作双轨</a><a href="/matrix/" aria-current="page">字母栅格</a></nav></div><div class="menu-section"><p style="margin:0 0 10px;font-size:13px"><a href="https://github.com/holynova/time-slider-clock" target="_blank" rel="noopener noreferrer" style="color:inherit">GitHub 源码</a><span class="release-version" style="float:right">v1.0.6</span></p><p class="caption">字母栅格使用 5×5 完整背板。每列都是同一种连续镂空滑轨，上下移动组合出字母、数字和符号。</p><div id="date" class="date"></div><div id="note" class="caption"></div><div id="status" class="status"></div></div></dialog><script>
+</main><dialog id="settings" class="settings" aria-labelledby="settingsTitle"><div class="menu-head"><h2 id="settingsTitle">时钟设置</h2><button id="closeMenu" class="close-menu" aria-label="关闭设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><label class="menu-row">主题<select id="theme" class="theme-select" aria-label="主题"><option value="system">跟随系统</option><option value="classic">经典灰墙</option><option value="graphite">夜光 · 荧光绿</option><option value="amber">夜光 · 荧光黄</option><option value="oled">纯黑 · 荧光绿</option></select></label><label class="menu-row">显示秒数<input id="seconds" type="checkbox" role="switch" checked></label><label class="menu-row">仅时钟<input id="pureMode" type="checkbox" role="switch" aria-describedby="pureHint"></label><p class="hint" id="pureHint">仅时钟模式下，轻点时钟或按 Esc 可打开设置。</p><div class="menu-section"><div class="controls"><button id="clockDisplay" aria-pressed="false">时间</button><button id="textDisplay" class="active" aria-pressed="true" aria-controls="glyphPanel">文字与符号</button></div><div id="glyphPanel" class="glyph-panel"><div class="controls"><button id="glyphDemo" aria-pressed="false">开始轮播 · 1 秒/词</button><button id="glyphPause" aria-pressed="false" hidden>暂停轮播</button></div><button id="glyphStop" class="full" hidden style="margin-top:8px">停止轮播，编辑当前内容</button><p class="hint" style="margin:10px 0 0">一轮 129 个画面，包含词语、53 个字符及全部六个字位。切到后台自动暂停，点击输入框可停止并编辑。</p></div></div><div class="menu-section"><div class="controls"><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div><div class="menu-section"><button id="fullscreen" class="full">全屏显示</button><nav class="versions" aria-label="滑轨版本"><a href="/">分列滑轨</a><a href="/whole-digit/">整位滑轨</a><a href="/hardware/">原作双轨</a><a href="/matrix/" aria-current="page">字母栅格</a></nav></div><div class="menu-section"><p style="margin:0 0 10px;font-size:13px"><a href="https://github.com/holynova/time-slider-clock" target="_blank" rel="noopener noreferrer" style="color:inherit">GitHub 源码</a><span class="release-version" style="float:right">v1.0.7</span></p><p class="caption">字母栅格使用 5×5 完整背板。每列都是同一种连续镂空滑轨，上下移动组合出字母、数字和符号。</p><div id="date" class="date"></div><div id="note" class="caption"></div><div id="status" class="status"></div></div></dialog><script>
 'use strict';
 const NS='http://www.w3.org/2000/svg';
 // Compact 5×5 alphabet. Every column uses one identical fixed perforated tape.
@@ -88,8 +88,25 @@ for(let d=0;d<6;d++){
  for(const sx of[x+4,x+66])el('circle',{cx:sx,cy:328,r:1.6,fill:'var(--rail-edge)'},frame);
  tapes.push({d,g,plate,light,frame,columns});
 }
-let displayMode='text',message='HELLO!',demoStart=0,demoPaused=false,demoElapsed=0;
-function demoText(now=performance.now()){const elapsed=demoPaused?demoElapsed:now-demoStart;const page=Math.floor(elapsed/2500)%Math.ceil(demoCharacters.length/6);return demoCharacters.slice(page*6,page*6+6).padEnd(6,' ');}
+// A readable word phase followed by complete glyph/position coverage and mixed stress frames.
+const demoWords=['HELLO','WORLD','SLIDER','CLOCK','GRID','NEON','QUICK','BROWN','FOX','JUMPS','OVER','LAZY','DOG','THE','ALPHA','BETA','GAMMA','DELTA','OMEGA','PIXEL','MATRIX','RAILS'];
+const demoCharset=demoCharacters+' ';
+function buildDemoFrames(){
+ const frames=demoWords.map(word=>({text:word.padEnd(6,' '),kind:'词语',label:word}));
+ for(const ch of demoCharset)frames.push({text:ch.repeat(6),kind:'字符覆盖',label:ch===' '?'空格':ch});
+ // Six rotated passes place adjacent mixed characters in every character slot.
+ for(let shift=0;shift<6;shift++)for(let start=0;start<demoCharset.length;start+=6){
+  const text=Array.from({length:6},(_,slot)=>demoCharset[(start+slot+shift)%demoCharset.length]).join('');
+  frames.push({text,kind:'混合测试',label:text.trim()||'空格'});
+ }
+ return frames;
+}
+const demoFrames=buildDemoFrames();
+let displayMode='text',message='HELLO!',demoStart=0,demoPaused=false,demoSuspended=false,demoElapsed=0;
+function demoTime(now=performance.now()){return demoPaused||demoSuspended?demoElapsed:Math.max(0,now-demoStart);}
+function demoIndex(now=performance.now()){return Math.floor(demoTime(now)/1000)%demoFrames.length;}
+function demoText(now=performance.now()){return demoFrames[demoIndex(now)].text;}
+function demoProgress(){const i=demoIndex(),frame=demoFrames[i];return `${demoPaused?'已暂停 · ':''}${frame.kind} ${i+1}/${demoFrames.length} · ${frame.label} · 每秒一词`;}
 let mode='live',last='',showSeconds=false,paused=false;
 let speed=60,anchorMs=Date.now(),anchorTick=performance.now();
 const $=id=>document.getElementById(id);
@@ -128,7 +145,7 @@ function startIntro(){
   },300));
  }));
 }
-function updateMotion(){const duration=displayMode!=='clock'?1.1:mode==='test'&&!paused?Math.min(.75,(showSeconds?1:60)/speed*.65):.75;$('clock').style.setProperty('--slide-duration',`${duration}s`);}
+function updateMotion(){const duration=displayMode==='demo'?.65:displayMode!=='clock'?1.1:mode==='test'&&!paused?Math.min(.75,(showSeconds?1:60)/speed*.65):.75;$('clock').style.setProperty('--slide-duration',`${duration}s`);}
 function render(value,instant=false){
  if(value===last)return;last=value;const characters=displayMode==='clock'?value.replaceAll(':',''):value;
  for(const t of tapes){const character=characters[t.d]||' ';
@@ -139,11 +156,11 @@ function render(value,instant=false){
    if(instant)requestAnimationFrame(()=>requestAnimationFrame(()=>{column.rail.style.transition='';column.emitter.style.transition='';}));
   }
  }
- $('clockTitle').textContent=displayMode==='clock'?`${value}，${mode==='live'?'当前时间':'测试时间'}`:`栅格文字：${value.trim()}`;
+ $('clockTitle').textContent=displayMode==='clock'?`${value}，${mode==='live'?'当前时间':'测试时间'}`:`栅格文字：${value.trim()||'空格'}`;
  $('accessibleTime').textContent=value.trim();$('clock').dataset.time=value;$('clock').dataset.display=displayMode;
 }
-function tick(instant=false,allowIntro=false){if(introActive&&!allowIntro)return;const date=currentDate();$('date').textContent=new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(date);render(displayMode==='clock'?formatTime(date):displayMode==='demo'?demoText():message.padEnd(6,' '),instant);if(displayMode==='clock')$('accessibleTime').dateTime=date.toISOString();else $('accessibleTime').removeAttribute('datetime');}
-function updateStatus(){if(displayMode!=='clock'){$('status').textContent=displayMode==='demo'?(demoPaused?'字符演示已暂停':'每 2.5 秒演示一组字符'):'正在显示文字';$('note').textContent='5×5 字形 · 每列一条固定镂空滑轨 · 6 个字符位';updateMotion();return;}$('status').textContent=mode==='live'?'正在走时':paused?'测试已暂停':`${speed} 倍快进`;$('note').textContent=mode==='live'?(showSeconds?'每一秒，换一种排列。':'每一分钟，换一种排列。'):`${paused?'已暂停':'时间以 '+speed+' 倍速度流逝'}，点击「实时」返回。`;updateMotion();}
+function tick(instant=false,allowIntro=false){if(introActive&&!allowIntro)return;const date=currentDate();$('date').textContent=new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(date);render(displayMode==='clock'?formatTime(date):displayMode==='demo'?demoText():message.padEnd(6,' '),instant);if(displayMode==='demo'){$('message').value=demoText().trimEnd()||' ';$('carouselStatus').textContent=demoProgress();$('status').textContent=demoProgress();}if(displayMode==='clock')$('accessibleTime').dateTime=date.toISOString();else $('accessibleTime').removeAttribute('datetime');}
+function updateStatus(){if(displayMode!=='clock'){$('status').textContent=displayMode==='demo'?demoProgress():'正在显示文字';$('note').textContent='5×5 字形 · 每列一条固定镂空滑轨 · 6 个字符位';updateMotion();return;}$('status').textContent=mode==='live'?'正在走时':paused?'测试已暂停':`${speed} 倍快进`;$('note').textContent=mode==='live'?(showSeconds?'每一秒，换一种排列。':'每一分钟，换一种排列。'):`${paused?'已暂停':'时间以 '+speed+' 倍速度流逝'}，点击「实时」返回。`;updateMotion();}
 function layout(){
  const clockMode=displayMode==='clock',six=!clockMode||showSeconds;
  for(const t of tapes){const shift=clockMode?0:-34*Math.floor(t.d/2);for(const g of [t.g,t.plate,t.light,t.frame])g.setAttribute('transform',`translate(${shift} 0)`);const hidden=t.d>=4&&!six;t.g.style.display=t.plate.style.display=t.light.style.display=t.frame.style.display=hidden?'none':'';}
@@ -155,10 +172,10 @@ function layout(){
 }
 function updateSeconds(){cancelIntro();showSeconds=$('seconds').checked;layout();last='';updateStatus();tick(true);}
 function setDisplay(next){
- cancelIntro();displayMode=next;last='';if(next==='demo'){demoStart=performance.now();demoElapsed=0;demoPaused=false;$('glyphPause').textContent='暂停演示';$('glyphPause').setAttribute('aria-pressed','false');}
- $('glyphPanel').hidden=next==='clock';$('glyphPause').hidden=next!=='demo';
+ cancelIntro();displayMode=next;last='';if(next==='demo'){$('glyphError').textContent='';$('message').removeAttribute('aria-invalid');demoStart=performance.now();demoElapsed=0;demoPaused=false;demoSuspended=document.hidden;$('glyphPause').textContent='暂停轮播';$('glyphPause').setAttribute('aria-pressed','false');}
+ $('glyphPanel').hidden=next==='clock';$('glyphPause').hidden=next!=='demo';$('glyphStop').hidden=next!=='demo';$('carouselStatus').hidden=next!=='demo';
  for(const id of ['clockDisplay','textDisplay']){const active=id===(next==='clock'?'clockDisplay':'textDisplay');$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}
- $('glyphDemo').setAttribute('aria-pressed',String(next==='demo'));layout();updateStatus();tick();
+ $('glyphDemo').setAttribute('aria-pressed',String(next==='demo'));$('glyphDemo').textContent=next==='demo'?'重新开始轮播':'开始轮播 · 1 秒/词';layout();updateStatus();tick();
 }
 function startTest(){cancelIntro();const value=$('startTime').value;if(!/^\d{2}:\d{2}(:\d{2})?$/.test(value)){$('startTime').reportValidity();return;}const parts=value.split(':').map(Number);const date=new Date();date.setHours(parts[0],parts[1],parts[2]||0,0);anchorMs=date.getTime();anchorTick=performance.now();paused=false;$('pause').textContent='暂停';$('pause').setAttribute('aria-pressed','false');updateStatus();tick(true);}
 function setMode(next){if(displayMode!=='clock')setDisplay('clock');cancelIntro();mode=next;document.body.classList.toggle('testing',next==='test');$('testPanel').hidden=next!=='test';for(const id of['live','test']){const active=id===next;$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}last='';if(next==='test')startTest();else{paused=false;updateStatus();tick(true);}}
@@ -167,10 +184,11 @@ $('speed').onchange=()=>{reanchor();speed=Number($('speed').value);updateStatus(
 $('startTime').onchange=()=>{if(mode==='test')startTest();};$('restart').onclick=startTest;
 $('pause').onclick=()=>{reanchor();paused=!paused;$('pause').textContent=paused?'继续':'暂停';$('pause').setAttribute('aria-pressed',String(paused));updateStatus();tick();};
 
-$('clockDisplay').onclick=()=>setDisplay('clock');$('textDisplay').onclick=()=>setDisplay('text');
+function stopCarousel(updateInput=true){if(displayMode==='demo'){message=last||demoText();if(updateInput)$('message').value=message.trimEnd()||' ';}setDisplay('text');}
+$('clockDisplay').onclick=()=>setDisplay('clock');$('textDisplay').onclick=stopCarousel;
 function applyText(){const next=normalizeText($('message').value);if(next===null){$('glyphError').textContent='请输入 1–6 个支持的字符；中文或其他字符暂不支持。';$('message').setAttribute('aria-invalid','true');return;}$('glyphError').textContent='';$('message').removeAttribute('aria-invalid');message=next;$('message').value=next.trimEnd()||' ';setDisplay('text');}
 $('letterForm').addEventListener('submit',e=>{e.preventDefault();applyText();});
-$('glyphDemo').onclick=()=>setDisplay('demo');$('glyphPause').onclick=()=>{if(demoPaused){demoStart=performance.now()-demoElapsed;}else{demoElapsed=performance.now()-demoStart;}demoPaused=!demoPaused;$('glyphPause').textContent=demoPaused?'继续演示':'暂停演示';$('glyphPause').setAttribute('aria-pressed',String(demoPaused));updateStatus();tick();};
+$('glyphDemo').onclick=()=>{setDisplay('demo');closeSettings();};$('glyphStop').onclick=stopCarousel;$('message').addEventListener('focus',()=>{if(displayMode==='demo')stopCarousel(false);});$('glyphPause').onclick=()=>{if(demoPaused){demoStart=performance.now()-demoElapsed;}else{demoElapsed=demoTime();}demoPaused=!demoPaused;$('glyphPause').textContent=demoPaused?'继续轮播':'暂停轮播';$('glyphPause').setAttribute('aria-pressed',String(demoPaused));updateStatus();tick();};
 
 $('theme').value=window.clockTheme.get();
 $('theme').onchange=()=>window.clockTheme.set($('theme').value);
@@ -186,6 +204,6 @@ stage.addEventListener('keydown',e=>{if(document.body.classList.contains('pure-m
 $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen();closeSettings();}else{$('pureMode').checked=true;$('pureMode').dispatchEvent(new Event('change'));}}catch{$('note').textContent='当前浏览器暂不支持全屏显示。';}};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!settings.open&&document.body.classList.contains('pure-mode')){e.preventDefault();openSettings();}});
 document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'退出全屏':'全屏显示';});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});
+document.addEventListener('visibilitychange',()=>{if(displayMode==='demo'){if(document.hidden){demoElapsed=demoTime();demoSuspended=true;}else{demoStart=performance.now()-demoElapsed;demoSuspended=false;}}if(!document.hidden)tick();});
 $('startTime').value=formatTime(new Date(),true);$('startTime').required=true;updateSeconds();startIntro();setInterval(()=>tick(),100);
 </script></body></html>

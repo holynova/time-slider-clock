@@ -15,5 +15,5 @@ assert.equal(frames.length,0,'Text updates must keep CSS transitions active, nev
 for(const tape of tapes)for(const c of tape.columns){assert.equal(c.rail.style.transition,'preserve');assert.equal(c.emitter.style.transform,c.rail.style.transform);}
 assert.equal(elements.clock.dataset.time,'WORLD!');
 vm.runInContext("render('ABC   ');",ctx);assert.equal(elements.accessibleTime.textContent,'ABC');
-assert(js.includes("const duration=displayMode!=='clock'?1.1:"));
+assert(js.includes("displayMode==='demo'?.65:displayMode!=='clock'?1.1:"));
 console.log('PASS: current → new text uses existing rail objects and active transitions, synchronized glow, rapid updates and space padding');
