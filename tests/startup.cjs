@@ -1,11 +1,11 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-for(const file of ['dist/index.html','dist/whole-digit/index.html']){
+for(const file of ['dist/index.html','dist/whole-digit/index.html','dist/hardware/index.html','dist/matrix/index.html']){
  const html=fs.readFileSync(file,'utf8'),source=html.split('<script>')[1].split('</script>')[0];
  const intro=source.slice(source.indexOf('let introActive='),source.indexOf('function updateMotion('));
  const tick=source.slice(source.indexOf('function tick('),source.indexOf('function updateStatus('));
  function scenario(reduced=false){
   const frames=[],timers=[],renders=[],dom={clock:{dataset:{},style:{setProperty(){}}},date:{},accessibleTime:{}};
-  const ctx=vm.createContext({Intl,Date,$:id=>dom[id],showSeconds:true,render:(value,instant)=>renders.push({value,instant}),currentDate:()=>new Date('2026-10-08T04:34:56Z'),formatTime:()=> '12:34:56',updateMotion(){},matchMedia:()=>({matches:reduced}),requestAnimationFrame:cb=>frames.push(cb),setTimeout:cb=>{const id=timers.length;timers.push({cb,active:true});return id;},clearTimeout:id=>{timers[id].active=false;}});
+  const ctx=vm.createContext({Intl,Date,$:id=>dom[id],showSeconds:true,displayMode:'clock',render:(value,instant)=>renders.push({value,instant}),currentDate:()=>new Date('2026-10-08T04:34:56Z'),formatTime:()=> '12:34:56',updateMotion(){},matchMedia:()=>({matches:reduced}),requestAnimationFrame:cb=>frames.push(cb),setTimeout:cb=>{const id=timers.length;timers.push({cb,active:true});return id;},clearTimeout:id=>{timers[id].active=false;}});
   vm.runInContext(intro+tick,ctx);
   const run=code=>vm.runInContext(code,ctx);
   const paint=()=>{while(frames.length)frames.shift()();};

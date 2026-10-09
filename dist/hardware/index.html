@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#c6c4c5">
-<title>Time Slider · 滑轨时钟</title><meta name="description" content="时间在黑白滑轨之间流动。一座实时运转的橙色像素机械时钟。">
+<title>Time Slider · 原作双轨时钟</title><meta name="description" content="时间在黑白滑轨之间流动。每位左一列与右两列分别滑动，参考 Hans Andersson 原作结构。">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23262929'/%3E%3Cpath d='M8 7h16v18H8z' fill='%23e96723'/%3E%3Cpath d='M12 11h8v10h-8z' fill='%23262929'/%3E%3C/svg%3E">
 <script id="theme-bootstrap">
 (()=>{
@@ -28,34 +28,72 @@ body{color:var(--text);background:var(--bg)}.page{background:radial-gradient(ell
 </style><script defer src="https://cloud.umami.is/script.js" data-website-id="e01c9f78-4607-4e60-b01c-77c8190b12b4"></script></head>
 <body><main class="page">
 <button class="menu-trigger" id="menuButton" aria-label="打开设置" aria-haspopup="dialog" aria-controls="settings" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-<section class="stage" aria-label="滑轨时钟"><svg class="clock" id="clock" viewBox="0 -70 700 750" role="img" aria-labelledby="clockTitle"><title id="clockTitle">实时滑轨时钟</title><defs>
+<section class="stage" aria-label="滑轨时钟"><svg class="clock" id="clock" viewBox="90 -238 527 1095" role="img" aria-labelledby="clockTitle"><title id="clockTitle">实时滑轨时钟</title><defs>
 <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--metal-top)"/><stop offset=".5" stop-color="var(--metal-mid)"/><stop offset="1" stop-color="var(--metal-bottom)"/></linearGradient>
 <linearGradient id="orange" x1="0" y1="0" x2="0" y2="1"><stop stop-color="var(--orange-top)"/><stop offset=".55" stop-color="var(--orange-mid)"/><stop offset="1" stop-color="var(--orange-bottom)"/></linearGradient>
 <linearGradient id="housingFill"><stop stop-color="var(--housing-start)"/><stop offset=".6" stop-color="var(--housing-mid)"/><stop offset="1" stop-color="var(--housing-end)"/></linearGradient>
 <filter id="shadow" x="-70%" y="-15%" width="260%" height="140%"><feDropShadow dx="9" dy="7" stdDeviation="2.1" flood-color="#403b40" flood-opacity=".29"/></filter>
 <filter id="frameShadow" x="-15%" y="-20%" width="140%" height="150%"><feDropShadow dx="7" dy="7" stdDeviation="2" flood-opacity=".20"/></filter>
-<clipPath id="window"><rect x="125" y="252" width="450" height="100"/></clipPath>
-</defs><g id="housing" filter="url(#frameShadow)"><rect x="112" y="235" width="475" height="131" rx="1" fill="url(#housingFill)"/><path d="M113 236h472" stroke="#666769" stroke-opacity=".5"/><path d="M587 236v130" stroke="#151718" stroke-width="3"/></g><g id="tapes"></g><g id="emission"><g id="orangeTapes" clip-path="url(#window)"></g></g><g id="colon" fill="url(#orange)"><rect x="337" y="272" width="20" height="17"/><rect x="337" y="311" width="20" height="17"/></g><g id="screws"></g></svg>
+<clipPath id="window"><rect x="125" y="252" width="450" height="115"/></clipPath>
+</defs><g id="housing" filter="url(#frameShadow)"><rect x="112" y="229" width="475" height="129" rx="1" fill="url(#housingFill)"/><path d="M113 230h472" stroke="#666769" stroke-opacity=".5"/><path d="M587 230v128" stroke="#151718" stroke-width="3"/></g><g id="backplates" clip-path="url(#window)"></g><g id="tapes"></g><g id="emission" class="digit-emission"><g id="emissionPixels"></g></g><g id="colon" fill="url(#orange)"><rect x="337" y="270" width="21" height="21"/><rect x="337" y="306" width="21" height="21"/></g><g id="screws"></g></svg>
 <time id="accessibleTime" class="sr-only"></time></section>
 
-</main><dialog id="settings" class="settings" aria-labelledby="settingsTitle"><div class="menu-head"><h2 id="settingsTitle">时钟设置</h2><button id="closeMenu" class="close-menu" aria-label="关闭设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><label class="menu-row">主题<select id="theme" class="theme-select" aria-label="主题"><option value="system">跟随系统</option><option value="classic">经典灰墙</option><option value="graphite">夜光 · 荧光绿</option><option value="amber">夜光 · 荧光黄</option><option value="oled">纯黑 · 荧光绿</option></select></label><label class="menu-row">显示秒数<input id="seconds" type="checkbox" role="switch" checked></label><label class="menu-row">仅时钟<input id="pureMode" type="checkbox" role="switch" aria-describedby="pureHint"></label><p class="hint" id="pureHint">仅时钟模式下，轻点时钟或按 Esc 可打开设置。</p><div class="menu-section"><div class="controls"><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div><div class="menu-section"><button id="fullscreen" class="full">全屏显示</button><nav class="versions" aria-label="滑轨版本"><a href="/" aria-current="page">分列滑轨</a><a href="/whole-digit/">整位滑轨</a><a href="/hardware/">原作双轨</a><a href="/matrix/">字母栅格</a></nav></div><div class="menu-section"><p style="margin:0 0 10px;font-size:13px"><a href="https://github.com/holynova/time-slider-clock" target="_blank" rel="noopener noreferrer" style="color:inherit">GitHub 源码</a><span class="release-version" style="float:right">v1.0.5</span></p><div id="date" class="date"></div><div id="note" class="caption"></div><div id="status" class="status"></div></div></dialog><script>
+</main><dialog id="settings" class="settings" aria-labelledby="settingsTitle"><div class="menu-head"><h2 id="settingsTitle">时钟设置</h2><button id="closeMenu" class="close-menu" aria-label="关闭设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><label class="menu-row">主题<select id="theme" class="theme-select" aria-label="主题"><option value="system">跟随系统</option><option value="classic">经典灰墙</option><option value="graphite">夜光 · 荧光绿</option><option value="amber">夜光 · 荧光黄</option><option value="oled">纯黑 · 荧光绿</option></select></label><label class="menu-row">显示秒数<input id="seconds" type="checkbox" role="switch" checked></label><label class="menu-row">仅时钟<input id="pureMode" type="checkbox" role="switch" aria-describedby="pureHint"></label><p class="hint" id="pureHint">仅时钟模式下，轻点时钟或按 Esc 可打开设置。</p><div class="menu-section"><div class="controls"><button id="live" class="active" aria-pressed="true">实时</button><button id="test" aria-pressed="false" aria-controls="testPanel">快进测试</button></div><div class="test-panel" id="testPanel" hidden><label>起始时间<input id="startTime" type="time" step="1" aria-label="测试起始时间"></label><label>速度<select id="speed" aria-label="测试速度"><option value="10">10 倍</option><option value="60" selected>60 倍</option><option value="600">600 倍</option><option value="3600">3600 倍</option></select></label><button id="pause" aria-pressed="false">暂停</button><button id="restart">重新开始</button></div></div><div class="menu-section"><button id="fullscreen" class="full">全屏显示</button><nav class="versions" aria-label="滑轨版本"><a href="/">分列滑轨</a><a href="/whole-digit/">整位滑轨</a><a href="/hardware/" aria-current="page">原作双轨</a><a href="/matrix/">字母栅格</a></nav></div><div class="menu-section"><p style="margin:0 0 10px;font-size:13px"><a href="https://github.com/holynova/time-slider-clock" target="_blank" rel="noopener noreferrer" style="color:inherit">GitHub 源码</a><span class="release-version" style="float:right">v1.0.5</span></p><p class="caption">参考 <a href="https://www.instructables.com/Time-Slider/" target="_blank" rel="noopener noreferrer" style="color:inherit">Hans Andersson 原作</a>。原硬件四位，网页扩展为六位。几何改编：<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer" style="color:inherit">CC BY-NC-SA 4.0</a>。</p><div id="date" class="date"></div><div id="note" class="caption"></div><div id="status" class="status"></div></div></dialog><script>
 'use strict';
 const NS='http://www.w3.org/2000/svg';
-const digits=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];
-const column=(d,c)=>Array.from({length:5},(_,r)=>digits[d][r*3+c]).join('');
-// A fixed binary tape contains every required five-cell column. Only its position changes.
+const digits=['111101101101111','001001001001001','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];
+const digitRows=n=>digits[n].match(/.{3}/g).map(row=>parseInt(row,2)).join('');
+// Each fixed tape holds complete three-cell rows; all three columns share one transform.
 function shortestTape(patterns){const p=[...new Set(patterns)],n=p.length,dp=Array.from({length:1<<n},()=>Array(n).fill(null));for(let i=0;i<n;i++)dp[1<<i][i]=p[i];for(let mask=1;mask<(1<<n);mask++)for(let i=0;i<n;i++){const a=dp[mask][i];if(!a)continue;for(let j=0;j<n;j++){if(mask>>j&1)continue;let k=5;while(k&&!a.endsWith(p[j].slice(0,k)))k--;const next=a+p[j].slice(k),m=mask|1<<j;if(dp[m][j]===null||next.length<dp[m][j].length)dp[m][j]=next;}}return dp[(1<<n)-1].reduce((a,b)=>a===null||b.length<a.length?b:a,null);}
 function el(name,attrs,parent){const e=document.createElementNS(NS,name);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);parent.append(e);return e;}
-const tapes=[],cell=20,starts=[135,237,373,475,611,713];
-for(let d=0;d<6;d++){const range=d===0?[0,1,2]:(d===2||d===4)?[0,1,2,3,4,5]:[0,1,2,3,4,5,6,7,8,9];for(let c=0;c<3;c++){const binary='0'+shortestTape(range.map(n=>column(n,c)))+'0',x=starts[d]+c*23;const g=el('g',{class:'rail','data-digit':d,'data-column':c},document.getElementById('tapes'));el('rect',{x:x-2,y:-2,width:25,height:binary.length*cell+4,rx:1,fill:'var(--rail)',filter:'url(#shadow)'},g);for(let row=0;row<binary.length;row++){el('rect',{x,y:row*cell+1,width:21,height:18,fill:binary[row]==='1'?'url(#metal)':'var(--cell-dark)',stroke:'#1b1d1e','stroke-width':.6},g);if(binary[row]==='1')el('path',{d:`M${x+1} ${row*cell+2}h19`,stroke:'#ffffff','stroke-opacity':.5},g);}const orange=el('g',{class:'rail'},document.getElementById('orangeTapes'));for(let row=0;row<binary.length;row++)el('rect',{x,y:row*cell+1,width:21,height:18,fill:binary[row]==='1'?'url(#orange)':'none',stroke:binary[row]==='1'?'var(--cell-dark)':'none','stroke-width':.7},orange);tapes.push({d,c,binary,g,orange});}}
-for(const x of starts){for(const sx of[x+5,x+60]){el('circle',{cx:sx,cy:359,r:2.2,fill:'#181a1b'},document.getElementById('screws'));el('path',{d:`M${sx-1} 358.5h2`,stroke:'#929294','stroke-width':.8},document.getElementById('screws'));}}
+// Geometry sampled from the author's L1–L4 / R1–R3 STL; row order follows installed orientation.
+const hardwareRows={left:'010111110000010',right:['10','11','11','11','01','11','11','11','01','11','01','11','01','11','10']};
+const positionLeft=[5,0,7,9,3,11,5,1,5,11],positionRight=[6,0,11,7,4,9,9,2,1,1];
+const tapes=[],cell=23*39/51,starts=[135,237,373,475,611,713];
+const railTop=252-8*cell-2,railBottom=252+3*cell+15*cell+2;
+const viewTop=railTop-28,viewHeight=railBottom-railTop+56;
+for(let d=0;d<6;d++){
+ const x=starts[d],plate=el('g',{'data-digit':d},document.getElementById('backplates'));
+ const face=el('clipPath',{id:`digit-face-${d}`},document.querySelector('defs'));
+ for(let r=0;r<5;r++)for(let c=0;c<3;c++)if(digits[8][r*3+c]==='1'){
+  const attrs={x:x+c*23,y:252+r*cell+1,width:21,height:cell-2};
+  el('rect',{...attrs,fill:'url(#orange)'},plate);el('rect',attrs,face);
+ }
+ for(const [side,columns,rows,positions] of [['left',1,hardwareRows.left.split(''),positionLeft],['right',2,hardwareRows.right,positionRight]]){
+  const sx=x+(side==='right'?23:0),width=columns*23+2;
+  const g=el('g',{class:'rail','data-digit':d,'data-side':side,'data-rows':rows.join(',')},document.getElementById('tapes'));
+  let outline=`M${sx-1} -1h${width}v${15*cell+2}h-${width}z`;const edges=[];
+  for(let r=0;r<15;r++)for(let c=0;c<columns;c++)if(rows[r][c]==='1'){
+   const px=sx+c*23,y=r*cell+1;outline+=`M${px} ${y}h21v${cell-2}h-21z`;edges.push(`M${px} ${y+cell-2}h21v-${cell-2}`);
+  }
+  el('path',{d:outline,fill:'var(--rail)','fill-rule':'evenodd',stroke:'var(--rail-edge)','stroke-width':.5,filter:'url(#shadow)','data-grid':'perforated'},g);
+  el('path',{d:edges.join(''),fill:'none',stroke:'var(--grid-edge)','stroke-width':.6,'stroke-opacity':.7},g);
+  const lattice=[];for(let r=0;r<=15;r++)lattice.push(`M${sx-1} ${r*cell}h${width}`);
+  for(let c=0;c<=columns;c++)lattice.push(`M${sx+c*23-1} -1v${15*cell+2}`);
+  el('path',{class:'lattice-lines',d:lattice.join(''),fill:'none',stroke:'var(--grid-edge)','stroke-width':.8,'stroke-opacity':'var(--lattice-opacity)'},g);
+  // Beyond a physical mask's ends, the backing is uncovered. The author uses this for 2 and 5.
+  const mask=el('mask',{id:`light-${d}-${side}`,maskUnits:'userSpaceOnUse',x:sx-2,y:viewTop,width:width+4,height:viewHeight},document.querySelector('defs'));
+  el('rect',{x:sx-2,y:viewTop,width:width+4,height:viewHeight,fill:'white'},mask);
+  const emitter=el('path',{class:'rail',d:outline,fill:'black','fill-rule':'evenodd'},mask);
+  const light=el('g',{'clip-path':`url(#digit-face-${d})`,'mask':`url(#light-${d}-${side})`},document.getElementById('emissionPixels'));
+  el('rect',{x:sx,y:252,width:columns*23-2,height:5*cell,fill:'var(--orange-mid)'},light);
+  tapes.push({d,side,rows,positions,g,plate,emitter,light});
+ }
+ // Stationary top/bottom guard row, plus the original fixed 8-shaped grid.
+ const fixed=el('g',{'data-fixed-grid':d},document.getElementById('screws'));
+ for(const y of [252-cell,252+5*cell])for(let c=0;c<3;c++)el('rect',{x:x+c*23-1,y,width:23,height:cell,fill:'var(--rail)',stroke:'var(--rail-edge)','stroke-width':1},fixed);
+ for(const r of [1,3])el('rect',{x:x+23,y:252+r*cell,width:23,height:cell,fill:'var(--rail)'},fixed);
+ const bars=[];for(let r=0;r<=5;r++)bars.push(`M${x-1} ${252+r*cell}h70`);for(let c=0;c<=3;c++)bars.push(`M${x+c*23-1} ${252-cell}v${7*cell}`);
+ el('path',{d:bars.join(''),fill:'none',stroke:'var(--rail-edge)','stroke-width':1.5},fixed);
+ el('path',{class:'lattice-lines',d:bars.join(''),fill:'none',stroke:'var(--grid-edge)','stroke-width':.7,'stroke-opacity':.6},fixed);
+}
 let mode='live',last='',showSeconds=false,paused=false;
 let speed=60,anchorMs=Date.now(),anchorTick=performance.now();
 const $=id=>document.getElementById(id);
 const secondScrews=[];
-for(const node of Array.from($('screws').children).slice(16))secondScrews.push(node);
+for(const node of $('screws').children)if(Number(node.dataset.fixedGrid)>=4)secondScrews.push(node);
 const secondColon=el('g',{fill:'url(#orange)'},$('colon'));
-for(const y of[272,311])el('rect',{x:575,y,width:20,height:17},secondColon);
+for(const y of[270,306])el('rect',{x:575,y,width:21,height:21},secondColon);
 function formatTime(date,seconds=showSeconds){return [date.getHours(),date.getMinutes(),...(seconds?[date.getSeconds()]:[])].map(n=>String(n).padStart(2,'0')).join(':');}
 function simulationMs(now=performance.now()){return anchorMs+(paused?0:Math.max(0,now-anchorTick)*speed);}
 function reanchor(){anchorMs=simulationMs();anchorTick=performance.now();}
@@ -88,10 +126,18 @@ function startIntro(){
  }));
 }
 function updateMotion(){const duration=mode==='test'&&!paused?Math.min(.75,(showSeconds?1:60)/speed*.65):.75;$('clock').style.setProperty('--slide-duration',`${duration}s`);}
-function render(value,instant=false){if(value===last)return;last=value;const numbers=value.replaceAll(':','').split('').map(Number);for(const t of tapes){if(t.d>=numbers.length)continue;const offset=t.binary.indexOf(column(numbers[t.d],t.c));if(offset<0)throw new Error('Tape pattern missing');if(instant){t.g.style.transition='none';t.orange.style.transition='none';}const transform=`translateY(${252-offset*cell}px)`;t.g.style.transform=transform;t.orange.style.transform=transform;if(instant)requestAnimationFrame(()=>requestAnimationFrame(()=>{t.g.style.transition='';t.orange.style.transition='';}));}$('clockTitle').textContent=`${value}，${mode==='live'?'当前时间':'测试时间'}`;$('accessibleTime').textContent=value;$('clock').dataset.time=value;}
+function render(value,instant=false){
+ if(value===last)return;last=value;const numbers=value.replaceAll(':','').split('').map(Number);
+ for(const t of tapes){if(t.d>=numbers.length)continue;const offset=8-t.positions[numbers[t.d]];
+  if(instant){t.g.style.transition='none';t.emitter.style.transition='none';}
+  const transform=`translateY(${252-offset*cell}px)`;t.g.style.transform=transform;t.emitter.style.transform=transform;
+  if(instant)requestAnimationFrame(()=>requestAnimationFrame(()=>{t.g.style.transition='';t.emitter.style.transition='';}));
+ }
+ $('clockTitle').textContent=`${value}，原作双轨${mode==='live'?'时钟':'测试'}`;$('accessibleTime').textContent=value;$('clock').dataset.time=value;
+}
 function tick(instant=false,allowIntro=false){if(introActive&&!allowIntro)return;const date=currentDate();$('date').textContent=new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(date);render(formatTime(date),instant);$('accessibleTime').dateTime=date.toISOString();}
-function updateStatus(){$('status').textContent=mode==='live'?'正在走时':paused?'测试已暂停':`${speed} 倍快进`;$('note').textContent=mode==='live'?(showSeconds?'每一秒，换一种排列。':'每一分钟，换一种排列。'):`${paused?'已暂停':'时间以 '+speed+' 倍速度流逝'}，点击「实时」返回。`;updateMotion();}
-function updateSeconds(){cancelIntro();showSeconds=$('seconds').checked;for(const t of tapes){t.g.style.display=t.orange.style.display=t.d>=4&&!showSeconds?'none':'';}for(const n of secondScrews)n.style.display=showSeconds?'':'none';secondColon.style.display=showSeconds?'':'none';$('clock').setAttribute('viewBox',showSeconds?'0 -70 938 750':'0 -70 700 750');$('clock').classList.toggle('seconds-visible',showSeconds);$('window').firstElementChild.setAttribute('width',showSeconds?688:450);const housing=$('housing');housing.children[0].setAttribute('width',showSeconds?713:475);housing.children[1].setAttribute('d',`M113 236h${showSeconds?710:472}`);housing.children[2].setAttribute('d',`M${showSeconds?825:587} 236v130`);last='';updateStatus();tick(true);}
+function updateStatus(){$('status').textContent=mode==='live'?'正在走时':paused?'测试已暂停':`${speed} 倍快进`;$('note').textContent=mode==='live'?'左一列、右两列分别滑动；顶部黑格固定。':`${paused?'已暂停':'时间以 '+speed+' 倍速度流逝'}，点击「实时」返回。`;updateMotion();}
+function updateSeconds(){cancelIntro();showSeconds=$('seconds').checked;for(const t of tapes){t.g.style.display=t.plate.style.display=t.light.style.display=t.d>=4&&!showSeconds?'none':'';}for(const n of secondScrews)n.style.display=showSeconds?'':'none';secondColon.style.display=showSeconds?'':'none';$('clock').setAttribute('viewBox',`90 ${viewTop} ${showSeconds?765:527} ${viewHeight}`);$('clock').classList.toggle('seconds-visible',showSeconds);$('window').firstElementChild.setAttribute('width',showSeconds?688:450);const housing=$('housing');housing.children[0].setAttribute('width',showSeconds?713:475);housing.children[1].setAttribute('d',`M113 230h${showSeconds?710:472}`);housing.children[2].setAttribute('d',`M${showSeconds?825:587} 230v128`);last='';updateStatus();tick(true);}
 function startTest(){cancelIntro();const value=$('startTime').value;if(!/^\d{2}:\d{2}(:\d{2})?$/.test(value)){$('startTime').reportValidity();return;}const parts=value.split(':').map(Number);const date=new Date();date.setHours(parts[0],parts[1],parts[2]||0,0);anchorMs=date.getTime();anchorTick=performance.now();paused=false;$('pause').textContent='暂停';$('pause').setAttribute('aria-pressed','false');updateStatus();tick(true);}
 function setMode(next){cancelIntro();mode=next;document.body.classList.toggle('testing',next==='test');$('testPanel').hidden=next!=='test';for(const id of['live','test']){const active=id===next;$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}last='';if(next==='test')startTest();else{paused=false;updateStatus();tick(true);}}
 $('seconds').onchange=updateSeconds;$('live').onclick=()=>setMode('live');$('test').onclick=()=>{if(mode!=='test'){$('startTime').value=formatTime(new Date(),true);setMode('test');}};
