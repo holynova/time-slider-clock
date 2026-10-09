@@ -19,6 +19,6 @@ for(const file of ['dist/index.html','dist/whole-digit/index.html','dist/hardwar
  const early=scenario();early.run('startIntro();cancelIntro();tick(true);');early.paint();early.next();assert.equal(early.dom.clock.dataset.phase,'live');assert.equal(early.renders.at(-1).value,'12:34:56');assert.equal(early.timers.length,0,'Cancelled intro must not restart later');
  const sliding=scenario();sliding.run('startIntro();');sliding.paint();sliding.next();sliding.run('cancelIntro();tick(true);');const stopped=sliding.renders.length;sliding.next();assert.equal(sliding.renders.length,stopped,'Cancelled completion must stay cancelled');
  const reduced=scenario(true);reduced.run('startIntro();');assert.deepEqual(reduced.renders,[{value:'12:34:56',instant:true}]);assert.equal(reduced.dom.clock.dataset.phase,'live');assert.equal(reduced.timers.length,0);
- assert(source.includes('updateSeconds();startIntro();'),'Opening and reload must initialize intro');
+ assert(source.includes(file.includes('/matrix/')?"updateSeconds();setDisplay('demo');startIntro();":'updateSeconds();startIntro();'),'Opening and reload must initialize intro and default carousel in alphabet mode');
  console.log('PASS:',file,'zero → slide → live, tick gate, cancellation, reduced motion');
 }

@@ -7,6 +7,7 @@ let now=0;const button={textContent:'',setAttribute(){}};
 const context=vm.createContext({assert,performance:{now:()=>now},$:()=>button,updateStatus(){},tick(){}});
 vm.runInContext(font+geometry+carousel,context);
 const state=vm.runInContext('({glyphs,tapeRows,offsets,demoFrames,demoCharset,demoWords})',context);
+assert(source.includes("updateSeconds();setDisplay('demo');startIntro();"),'Entering or refreshing alphabet mode must start the carousel before the opening animation');
 assert.equal(state.demoFrames.length,129);assert.equal(new Set(state.demoCharset).size,53);
 assert(state.demoWords.every(word=>/^[A-Z]{1,6}$/.test(word)));
 const seen=Array.from({length:6},()=>new Set());
