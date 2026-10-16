@@ -15,7 +15,7 @@
       "zone_id": "a9ae8ed6c9a473e6c79daa58b29e8b12"
     },
     {
-      "pattern": "xiaosang.cc/time-slider-clock",
+      "pattern": "xiaosang.cc/time-slider-clock*",
       "zone_id": "a9ae8ed6c9a473e6c79daa58b29e8b12"
     }
   ],
