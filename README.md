@@ -37,7 +37,7 @@ npm run deploy:check
 npm run deploy
 ```
 
-Cloudflare Workers · `xiaosang.cc/time-slider-clock` · v1.0.7
+Cloudflare Workers · `xiaosang.cc/time-slider-clock` · v1.0.8（跳转 Worker；时钟本体已合并至 100-clocks）
 
 源码和部署配置均在 `main`；从同一提交在本地手动发布，无 Cloudflare 自动发布工作流。
 Source and deployment configuration share `main`; deploy manually from the same commit.
